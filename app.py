@@ -151,6 +151,14 @@ if "tgt_label" not in st.session_state:
 if "result" not in st.session_state:
     st.session_state.result = ""
 
+# Swap callback – runs before widgets are instantiated on rerun
+def _swap_langs():
+    old_src = st.session_state.src_label
+    old_tgt = st.session_state.tgt_label
+    st.session_state.src_label = old_tgt
+    st.session_state.tgt_label = old_src
+    st.session_state.result = ""
+
 # Language selectors + swap
 col_src, col_swap, col_tgt = st.columns([5, 1, 5])
 
@@ -172,15 +180,7 @@ with col_src:
 with col_swap:
     st.write("")
     st.write("")
-    if st.button("⇄"):
-        old_src = st.session_state.src_label
-        old_tgt = st.session_state.tgt_label
-        st.session_state.src_label = old_tgt
-        st.session_state.tgt_label = old_src
-        st.session_state.src_select = old_tgt
-        st.session_state.tgt_select = old_src
-        st.session_state.result = ""
-        st.rerun()
+    st.button("⇄", on_click=_swap_langs)
 
 with col_tgt:
     src_code   = LABEL_TO_CODE[st.session_state.src_label]
