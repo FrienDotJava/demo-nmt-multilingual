@@ -222,7 +222,7 @@ if translate_btn:
     if not input_text.strip():
         st.warning("Silakan masukkan teks terlebih dahulu.")
     else:
-        with st.spinner("Memuat model… (hanya sekali)"):
+        with st.spinner("Memuat model…"):
             tokenizer, model, device = load_model(MODEL_DIR)
         with st.spinner("Menerjemahkan…"):
             try:
