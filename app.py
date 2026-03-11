@@ -177,6 +177,8 @@ with col_swap:
         old_tgt = st.session_state.tgt_label
         st.session_state.src_label = old_tgt
         st.session_state.tgt_label = old_src
+        st.session_state.src_select = old_tgt
+        st.session_state.tgt_select = old_src
         st.session_state.result = ""
         st.rerun()
 
