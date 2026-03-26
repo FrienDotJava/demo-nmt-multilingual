@@ -103,7 +103,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Model loading (cached)
-MODEL_DIR = os.getenv("MODEL_DIR", "BouncingBubble/NLLB-bidirectional-V2")
+MODEL_DIR = os.getenv("MODEL_DIR", "BouncingBubble/nllb-local-language")
 
 @st.cache_resource(show_spinner=False)
 def load_model(model_path: str):
