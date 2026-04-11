@@ -2,6 +2,7 @@ import streamlit as st
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 import os
+import evaluate
 
 # Page config
 st.set_page_config(
@@ -111,6 +112,12 @@ def load_model(model_path: str):
     model     = AutoModelForSeq2SeqLM.from_pretrained(model_path)
     device    = 0 if torch.cuda.is_available() else -1
     return tokenizer, model, device
+
+@st.cache_resource(show_spinner=False)
+def load_metrics():
+    bleu_metric = evaluate.load("sacrebleu")
+    chrf_metric = evaluate.load("chrf")
+    return bleu_metric, chrf_metric
 
 def translate(text: str, src_lang: str, tgt_lang: str,
               tokenizer, model, device: int,
@@ -245,6 +252,44 @@ if st.session_state.result:
         f'<div class="result-box">{st.session_state.result}</div>',
         unsafe_allow_html=True,
     )
+
+    # --- EVALUATION SECTION ---
+    st.markdown('<div class="eval-section">', unsafe_allow_html=True)
+    st.subheader("📊 Evaluasi Model")
+    
+    ref_text = st.text_area(
+        "Masukkan referensi terjemahan yang benar (Human Translation):",
+        height=100,
+        placeholder="Ketik referensi terjemahan untuk membandingkan output..."
+    )
+    
+    eval_btn = st.button("Hitung Skor")
+    
+    if eval_btn:
+        if not ref_text.strip():
+            st.warning("Silakan masukkan referensi teks untuk dihitung skornya.")
+        else:
+            with st.spinner("Menghitung skor..."):
+                bleu_metric, chrf_metric = load_metrics()
+                
+                # evaluate expects lists for predictions and lists of lists for references
+                predictions = [st.session_state.result.strip()]
+                references = [[ref_text.strip()]]
+                
+                # Calculate BLEU
+                bleu_result = bleu_metric.compute(predictions=predictions, references=references)
+                
+                # Calculate chrF++ (word_order=2 enables chrF++)
+                chrf_result = chrf_metric.compute(predictions=predictions, references=references, word_order=2)
+                
+                # Display metrics
+                col_metric1, col_metric2 = st.columns(2)
+                with col_metric1:
+                    st.metric("BLEU Score", f"{bleu_result['score']:.2f}")
+                with col_metric2:
+                    st.metric("chrF++ Score", f"{chrf_result['score']:.2f}")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Footer
 st.markdown("""
