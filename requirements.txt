@@ -3,4 +3,5 @@ torch
 transformers
 pandas
 numpy
+sacrebleu
 evaluate
