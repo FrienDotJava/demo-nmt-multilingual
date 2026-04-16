@@ -5,3 +5,4 @@ pandas
 numpy
 sacrebleu
 evaluate
+torchvision
