@@ -286,8 +286,16 @@ if st.session_state.result:
                 col_metric1, col_metric2 = st.columns(2)
                 with col_metric1:
                     st.metric("BLEU Score", f"{bleu_result['score']:.2f}")
+                    st.write("BLEU merupakan metrik evaluasi otomatis yang mengukur kesamaan antara teks " \
+                    "hasil terjemahan mesin dengan teks aktual berdasarkan perbandingan n-gram (urutan kata sepanjang n). " \
+                    "Nilai BLEU berada pada rentang 0 hingga 100, di mana semakin tinggi nilai BLEU menunjukkan hasil " \
+                    "terjemahan yang semakin mirip dengan terjemahan aktual.")
                 with col_metric2:
                     st.metric("chrF++ Score", f"{chrf_result['score']:.2f}")
+                    st.write("ChrF++ adalah metrik otomatis untuk mengevaluasi kualitas terjemahan " \
+                    "mesin yang berbasis n gram karakter dan kata. Metrik evaluasi ini berada pada " \
+                    "rentang 0 sampai 100 di mana semakin tinggi nilainya maka hasil terjemahan " \
+                    "menunjukkan kualitas yang semakin baik.")
     
     st.markdown('</div>', unsafe_allow_html=True)
 
